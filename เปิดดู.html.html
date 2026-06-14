@@ -1,0 +1,211 @@
+```html
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mystery Box GUI</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:radial-gradient(circle,#111,#050505);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+}
+
+.box{
+    position:relative;
+    width:220px;
+    height:220px;
+}
+
+.base{
+    position:absolute;
+    bottom:0;
+    width:220px;
+    height:150px;
+    background:linear-gradient(180deg,#1a1a1a,#080808);
+    border:2px solid #8b5cf6;
+    border-radius:12px;
+    box-shadow:
+        0 0 20px #8b5cf6,
+        inset 0 0 20px rgba(168,85,247,.3);
+}
+
+.lid{
+    position:absolute;
+    top:50px;
+    width:220px;
+    height:50px;
+    background:linear-gradient(180deg,#222,#111);
+    border:2px solid #a855f7;
+    border-radius:12px;
+    box-shadow:0 0 25px #a855f7;
+    transform-origin:left center;
+    transition:1.2s;
+}
+
+.logo{
+    position:absolute;
+    width:100%;
+    height:150px;
+    bottom:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:60px;
+    text-shadow:
+        0 0 10px #a855f7,
+        0 0 30px #a855f7,
+        0 0 60px #a855f7;
+}
+
+.open .lid{
+    transform:rotate(-130deg);
+}
+
+.message{
+    position:absolute;
+    color:#d8b4fe;
+    font-size:42px;
+    font-weight:bold;
+    opacity:0;
+    transform:translateY(30px);
+    transition:1s;
+    text-align:center;
+    text-shadow:
+        0 0 10px #a855f7,
+        0 0 30px #a855f7,
+        0 0 60px #a855f7;
+}
+
+.show{
+    opacity:1;
+    transform:translateY(-150px);
+}
+
+#toggleBtn{
+    position:absolute;
+    bottom:50px;
+    padding:12px 30px;
+    font-size:18px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    background:#8b5cf6;
+    color:white;
+    box-shadow:0 0 20px #a855f7;
+    transition:.3s;
+}
+
+#toggleBtn:hover{
+    transform:scale(1.05);
+}
+
+.particle{
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:#a855f7;
+    border-radius:50%;
+    pointer-events:none;
+    animation:burst 2s linear forwards;
+    box-shadow:0 0 15px #a855f7;
+}
+
+@keyframes burst{
+    from{
+        transform:translate(0,0) scale(1);
+        opacity:1;
+    }
+    to{
+        transform:translate(var(--x),var(--y)) scale(0);
+        opacity:0;
+    }
+}
+</style>
+
+</head>
+<body>
+
+<div class="box" id="box">
+    <div class="lid"></div>
+    <div class="base"></div>
+    <div class="logo">🚀</div>
+</div>
+
+<div class="message" id="msg">
+    มาเล่นวาโรด้วยหน่อยครับ
+</div>
+
+<button id="toggleBtn">เปิดกล่อง</button>
+
+<script>
+const box = document.getElementById("box");
+const msg = document.getElementById("msg");
+const btn = document.getElementById("toggleBtn");
+
+let opened = false;
+
+btn.onclick = () => {
+
+    if(!opened){
+
+        opened = true;
+
+        box.classList.add("open");
+        msg.classList.add("show");
+
+        btn.innerText = "ปิดกล่อง";
+
+        for(let i=0;i<250;i++){
+
+            let p = document.createElement("div");
+            p.className = "particle";
+
+            p.style.left = (window.innerWidth/2) + "px";
+            p.style.top = (window.innerHeight/2) + "px";
+
+            p.style.setProperty(
+                "--x",
+                (Math.random()*1200-600) + "px"
+            );
+
+            p.style.setProperty(
+                "--y",
+                (Math.random()*900-450) + "px"
+            );
+
+            document.body.appendChild(p);
+
+            setTimeout(()=>{
+                p.remove();
+            },2000);
+        }
+
+    }else{
+
+        opened = false;
+
+        box.classList.remove("open");
+        msg.classList.remove("show");
+
+        btn.innerText = "เปิดกล่อง";
+    }
+};
+</script>
+
+</body>
+</html>
+```
+
