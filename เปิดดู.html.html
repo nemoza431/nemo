@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy Box Message</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    height:100vh;
+    overflow:hidden;
+    background:
+    radial-gradient(circle at 20% 20%, #1a0033, transparent 40%),
+    radial-gradient(circle at 80% 30%, #0b1b3a, transparent 40%),
+    radial-gradient(circle at 50% 80%, #120018, transparent 40%),
+    black;
+}
+
+/* ⭐ stars */
+.star{
+    position:fixed;
+    width:2px;
+    height:2px;
+    background:white;
+    border-radius:50%;
+    opacity:.8;
+    box-shadow:0 0 6px white;
+}
+
+/* 🌠 falling star */
+.fallstar{
+    position:fixed;
+    width:3px;
+    height:3px;
+    background:white;
+    border-radius:50%;
+    box-shadow:0 0 10px white;
+}
+
+/* 📦 center */
+.container{
+    position:fixed;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+
+/* box */
+.box{
+    position:relative;
+    width:220px;
+    height:220px;
+}
+
+.base{
+    position:absolute;
+    bottom:0;
+    width:220px;
+    height:150px;
+    background:#111;
+    border:2px solid #a855f7;
+    border-radius:12px;
+    box-shadow:0 0 20px #a855f7;
+}
+
+.lid{
+    position:absolute;
+    top:50px;
+    width:220px;
+    height:50px;
+    background:#222;
+    border:2px solid #a855f7;
+    border-radius:12px;
+    transform-origin:left;
+    transition:.8s;
+}
+
+.open .lid{
+    transform:rotate(-130deg);
+}
+
+.logo{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:60px;
+}
+
+/* 🎛️ button */
+button{
+    margin-top:25px;
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    background:#a855f7;
+    color:white;
+    cursor:pointer;
+    box-shadow:0 0 15px #a855f7;
+}
+
+/* 💥 particles */
+.particle{
+    position:fixed;
+    width:6px;
+    height:6px;
+    background:#a855f7;
+    border-radius:50%;
+    animation:boom 1s forwards;
+}
+
+@keyframes boom{
+    to{
+        transform:translate(var(--x),var(--y));
+        opacity:0;
+    }
+}
+
+/* 💜 trail */
+.trail{
+    position:fixed;
+    width:50px;
+    height:3px;
+    background:linear-gradient(90deg,#a855f7,transparent);
+    pointer-events:none;
+    animation:fade .3s forwards;
+}
+
+@keyframes fade{
+    from{opacity:1}
+    to{opacity:0;transform:scaleX(0.2);}
+}
+
+/* ✨ MESSAGE */
+#message{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(0);
+    font-size:40px;
+    font-weight:bold;
+    color:#a855f7;
+    text-shadow:0 0 20px #a855f7;
+    opacity:0;
+    transition:.5s;
+    pointer-events:none;
+}
+
+#message.show{
+    transform:translate(-50%,-50%) scale(1.2);
+    opacity:1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="box" id="box">
+    <div class="lid"></div>
+    <div class="base"></div>
+    <div class="logo">🚀</div>
+</div>
+
+<button onclick="toggleBox()">OPEN BOX</button>
+
+</div>
+
+<!-- ✨ message -->
+<div id="message">YOU GOT A REWARD</div>
+
+<script>
+
+let opened=false;
+
+/* ⭐ stars */
+for(let i=0;i<120;i++){
+    let s=document.createElement("div");
+    s.className="star";
+
+    let size=Math.random()*2;
+
+    s.style.width=size+"px";
+    s.style.height=size+"px";
+
+    s.style.left=Math.random()*100+"vw";
+    s.style.top=Math.random()*100+"vh";
+
+    document.body.appendChild(s);
+}
+
+/* 🌠 falling stars */
+function fallStar(){
+    let f=document.createElement("div");
+    f.className="fallstar";
+
+    let x=Math.random()*window.innerWidth;
+    let y=-20;
+
+    f.style.left=x+"px";
+    f.style.top=y+"px";
+
+    document.body.appendChild(f);
+
+    let move=setInterval(()=>{
+        x+=2;
+        y+=8;
+        f.style.transform=`translate(${x}px,${y}px)`;
+    },20);
+
+    setTimeout(()=>{
+        clearInterval(move);
+        f.remove();
+    },3000);
+}
+
+setInterval(fallStar,300);
+
+/* 📦 box */
+const box=document.getElementById("box");
+const msg=document.getElementById("message");
+
+function toggleBox(){
+
+    opened=!opened;
+    box.classList.toggle("open");
+
+    explode();
+
+    if(opened){
+        msg.classList.add("show");
+
+        setTimeout(()=>{
+            msg.classList.remove("show");
+        },1500);
+    }
+}
+
+/* 💥 explosion */
+function explode(){
+    for(let i=0;i<50;i++){
+        let p=document.createElement("div");
+        p.className="particle";
+
+        p.style.left="50%";
+        p.style.top="50%";
+
+        p.style.setProperty("--x",(Math.random()*400-200)+"px");
+        p.style.setProperty("--y",(Math.random()*400-200)+"px");
+
+        document.body.appendChild(p);
+
+        setTimeout(()=>p.remove(),1000);
+    }
+}
+
+/* 💜 mouse trail */
+document.addEventListener("mousemove",(e)=>{
+
+    let t=document.createElement("div");
+    t.className="trail";
+
+    t.style.left=e.clientX+"px";
+    t.style.top=e.clientY+"px";
+
+    document.body.appendChild(t);
+
+    setTimeout(()=>t.remove(),300);
+
+});
+
+</script>
+
+</body>
+</html>
